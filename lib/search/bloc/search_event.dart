@@ -6,3 +6,11 @@ abstract class SearchEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class SearchTermChanged extends SearchEvent {
+  const SearchTermChanged(this.term);
+  final String term;
+
+  @override
+  List<Object> get props => [term];
+}

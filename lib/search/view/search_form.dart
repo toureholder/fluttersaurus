@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttersaurus/search/search.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttersaurus/synonyms/synonyms.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
@@ -12,7 +13,7 @@ class SearchForm extends StatelessWidget {
       children: [
         SearchBar(
           onChanged: (term) {
-            // TODO: Handle new search terms
+            context.read<SearchBloc>().add(SearchTermChanged(term));
           },
         ),
         const SizedBox(height: 16),
@@ -25,9 +26,19 @@ class SearchForm extends StatelessWidget {
 class _SearchContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Flexible(
-      // TODO: React to state changes
-      child: _SearchInitial(),
+    return Flexible(
+      child: BlocBuilder<SearchBloc, SearchState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case SearchStatus.loading:
+              return const _SearchLoading();
+            case SearchStatus.success:
+              return _SearchSuccess(suggestions: state.suggestions);
+            default:
+              return const _SearchInitial();
+          }
+        },
+      ),
     );
   }
 }

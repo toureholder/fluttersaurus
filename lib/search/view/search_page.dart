@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttersaurus/search/search.dart';
+import 'package:thesaurus_repository/thesaurus_repository.dart';
 
 class SearchPage extends StatelessWidget {
   @override
@@ -27,8 +29,12 @@ class SearchPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Flexible(
-              // TODO: Provide SearchBloc
-              child: SearchForm(),
+              child: BlocProvider(
+                create: (context) => SearchBloc(
+                  context.read<ThesaurusRepository>(),
+                ),
+                child: SearchForm(),
+              ),
             ),
           ],
         ),
