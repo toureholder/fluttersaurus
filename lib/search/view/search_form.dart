@@ -27,16 +27,29 @@ class _SearchContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: BlocBuilder<SearchBloc, SearchState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case SearchStatus.loading:
-              return const _SearchLoading();
-            case SearchStatus.success:
-              return _SearchSuccess(suggestions: state.suggestions);
-            default:
-              return const _SearchInitial();
+      child: BlocConsumer<SearchBloc, SearchState>(
+        listener: (context, state) {
+          if (state.status == SearchStatus.failure) {
+            Scaffold.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Something went wrong.'),
+              ),
+            );
           }
+        },
+        builder: (context, state) {
+          return BlocBuilder<SearchBloc, SearchState>(
+            builder: (context, state) {
+              switch (state.status) {
+                case SearchStatus.loading:
+                  return const _SearchLoading();
+                case SearchStatus.success:
+                  return _SearchSuccess(suggestions: state.suggestions);
+                default:
+                  return const _SearchInitial();
+              }
+            },
+          );
         },
       ),
     );
